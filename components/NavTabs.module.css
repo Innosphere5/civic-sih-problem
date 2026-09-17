@@ -1,0 +1,47 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--teal-600);
+  padding: 0 32px;
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  padding: 15px 20px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #d6e6ea;
+  border-bottom: 3px solid transparent;
+}
+
+.tab:hover {
+  color: #ffffff;
+}
+
+.tabActive {
+  background: var(--navy-900);
+  color: #ffffff;
+  border-bottom: 3px solid var(--amber-500);
+}
+
+.badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.badgeOutline {
+  border: 1px solid #7fb3c2;
+  color: #d6e6ea;
+}
+
+.badgeSolid {
+  background: #2f8b7a;
+  color: #ffffff;
+}

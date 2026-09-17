@@ -1,0 +1,111 @@
+/* ============================================================
+   National Civic Grievance Redressal Portal — design tokens
+   Colors/spacing taken directly from the reference screens.
+   ============================================================ */
+
+:root {
+  /* Header / navy family */
+  --navy-900: #0d2733;
+  --navy-800: #11313f;
+  --teal-700: #17434f;
+  --teal-600: #1c4f5e;
+
+  /* Amber / accent family */
+  --amber-600: #c67a12;
+  --amber-500: #d98a1d;
+  --amber-100: #f7e2bd;
+  --amber-border: #e0a94c;
+
+  /* Status: red / escalated */
+  --red-700: #a8341f;
+  --red-600: #b3412c;
+  --red-100: #f8dfd9;
+  --red-border: #eec3ba;
+
+  /* Status: green / verified */
+  --green-700: #256b3b;
+  --green-600: #2e7d46;
+  --green-100: #e0f2e4;
+
+  /* Status: blue / info */
+  --blue-700: #175a72;
+  --blue-600: #1c7292;
+  --blue-100: #dcebf0;
+
+  /* Neutrals */
+  --ink-900: #1b2326;
+  --ink-700: #3f484b;
+  --ink-500: #6b7476;
+  --ink-300: #9aa3a5;
+  --line-200: #e3e6e7;
+  --line-100: #edeff0;
+  --paper: #ffffff;
+  --page-bg: #f2f4f5;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --shadow-card: 0 1px 2px rgba(20, 30, 33, 0.07);
+
+  --font-body: "Noto Sans", "Segoe UI", Arial, sans-serif;
+  --font-devanagari: "Noto Sans Devanagari", "Noto Sans", sans-serif;
+  --font-mono-id: "IBM Plex Sans", "Noto Sans", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--ink-900);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+.hi {
+  font-family: var(--font-devanagari);
+}
+
+.pageBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  padding: 24px 32px 64px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.officerBody {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px 32px 64px;
+  max-width: 1700px;
+  margin: 0 auto;
+}
+
+@media (max-width: 980px) {
+  .pageBody,
+  .officerBody {
+    grid-template-columns: 1fr;
+  }
+}
