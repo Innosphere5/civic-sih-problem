@@ -165,7 +165,7 @@ async function handlePost(req, res) {
 function handleGet(req, res) {
   try {
     const db = getDb();
-    const { status, category, department } = req.query;
+    const { status, category, department, search } = req.query;
 
     let sql = "SELECT * FROM complaints WHERE 1=1";
     const params = [];
@@ -181,6 +181,11 @@ function handleGet(req, res) {
     if (department) {
       sql += " AND department = ?";
       params.push(department);
+    }
+    if (search && search.trim()) {
+      sql += " AND (complaint_id LIKE ? OR complaint_text LIKE ? OR locality LIKE ? OR contact LIKE ?)";
+      const term = `%${search.trim()}%`;
+      params.push(term, term, term, term);
     }
 
     sql += " ORDER BY created_at DESC";

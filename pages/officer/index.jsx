@@ -9,6 +9,7 @@ import Badge from "../../components/Badge";
 import InfoCard from "../../components/InfoCard";
 import FilePreviewModal from "../../components/FilePreviewModal";
 import FullApplicationModal from "../../components/FullApplicationModal";
+import useAdminAuth from "../../lib/useAdminAuth";
 import styles from "../../styles/Officer.module.css";
 import listStyles from "../../styles/OfficerList.module.css";
 
@@ -23,6 +24,7 @@ const STATUS_BADGE = {
 };
 
 export default function OfficerListView() {
+  const { admin, loading: authLoading, logout } = useAdminAuth({ required: true });
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("");
@@ -33,6 +35,7 @@ export default function OfficerListView() {
   useEffect(() => {
     fetchComplaints();
   }, [filterStatus, filterCategory]);
+
 
   function fetchComplaints() {
     setLoading(true);
@@ -88,6 +91,27 @@ export default function OfficerListView() {
     inProgress: complaints.filter((c) => c.status === "In Progress").length,
   };
 
+  if (authLoading || !admin) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#0b1f28", color: "#f2f5f6", fontFamily: "var(--font-body)" }}>
+        <div style={{ width: "42px", height: "42px", border: "3px solid rgba(255,255,255,0.15)", borderTopColor: "#d98a1d", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+        <div style={{ marginTop: "18px", fontSize: "14px", fontWeight: 700, letterSpacing: "0.5px" }}>
+          Verifying Officer Security Clearance...
+        </div>
+        <div style={{ marginTop: "5px", fontSize: "11px", color: "#8da4ae" }}>
+          Administrative Casework Hub • National Informatics Centre
+        </div>
+        <style jsx>{`
+          @keyframes spin { to { transform: rotate(360deg); } }
+        `}</style>
+      </div>
+    );
+  }
+
+  const clearanceBadge = admin?.role === "superadmin"
+    ? "CASEWORK LEVEL: CHIEF APEX"
+    : "CASEWORK LEVEL: NODAL TIER-1";
+
   return (
     <>
       <Head>
@@ -95,11 +119,12 @@ export default function OfficerListView() {
       </Head>
 
       <TopUtilityBar rightLabel="Administrative Casework Hub" />
-      <PortalHeader />
-      <NavTabs active="officer" badge={{ text: "CASEWORK LEVEL: NODAL TIER-1", variant: "outline" }} />
+      <PortalHeader admin={admin} />
+      <NavTabs active="officer" badge={{ text: clearanceBadge, variant: "outline" }} />
 
       <div className={styles.officerBody}>
-        <OfficerSidebar />
+        <OfficerSidebar admin={admin} onLogout={logout} />
+
 
         <main className={styles.main}>
           <div className={styles.breadcrumb}>

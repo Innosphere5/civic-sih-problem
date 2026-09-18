@@ -81,3 +81,27 @@
   font-weight: 700;
   color: var(--green-600);
 }
+
+.countBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: var(--line-200);
+  color: var(--ink-700);
+}
+
+.countAmber {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.countGreen {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.countRed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
