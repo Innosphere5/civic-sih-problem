@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import TopUtilityBar from "../components/TopUtilityBar";
 import PortalHeader from "../components/PortalHeader";
@@ -7,6 +7,7 @@ import NavTabs from "../components/NavTabs";
 import Badge from "../components/Badge";
 import InfoCard from "../components/InfoCard";
 import Stepper from "../components/Stepper";
+import FilePreviewModal from "../components/FilePreviewModal";
 import styles from "../styles/Citizen.module.css";
 
 const CHARTER = [
@@ -22,14 +23,72 @@ function countWords(text) {
 
 export default function CitizenFilingFlow() {
   const router = useRouter();
+  const fileInputRef = useRef(null);
   const [complaintText, setComplaintText] = useState("");
   const [locality, setLocality] = useState("");
   const [contact, setContact] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const wordCount = countWords(complaintText);
   const isWordCountOk = wordCount >= 15;
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  function processFile(file) {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Selected file exceeds 5MB limit. Please upload a smaller file.");
+      return;
+    }
+    const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setSelectedFile({
+        file,
+        name: file.name,
+        sizeFormatted: formatBytes(file.size),
+        dataUrl: e.target.result,
+        isPdf,
+      });
+      setError("");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleFileChange(e) {
+    const file = e.target.files?.[0];
+    if (file) processFile(file);
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    setIsDragging(true);
+  }
+
+  function handleDragLeave(e) {
+    e.preventDefault();
+    setIsDragging(false);
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) processFile(file);
+  }
+
+  function handleRemoveFile() {
+    setSelectedFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
 
   async function handleSubmit() {
     setError("");
@@ -53,6 +112,28 @@ export default function CitizenFilingFlow() {
 
     setLoading(true);
     try {
+      let imagePath = null;
+
+      // 1. If file attached, upload first
+      if (selectedFile) {
+        const uploadRes = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dataUrl: selectedFile.dataUrl,
+            filename: selectedFile.name,
+          }),
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) {
+          setError(uploadData.error || "Failed to upload photo.");
+          setLoading(false);
+          return;
+        }
+        imagePath = uploadData.fileUrl;
+      }
+
+      // 2. Submit complaint with image_path
       const res = await fetch("/api/complaints", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,6 +142,7 @@ export default function CitizenFilingFlow() {
           locality: locality,
           contact: contact,
           language: "en",
+          image_path: imagePath,
         }),
       });
 
@@ -190,20 +272,104 @@ export default function CitizenFilingFlow() {
             </div>
 
             <label className={styles.fieldLabel}>
-              Upload Photo of Problem{" "}
-              <span className="hi">(वैकल्पिक फोटो संलग्न करें)</span> — Max 5MB
+              Upload Photo / Document of Problem{" "}
+              <span className="hi">(वैकल्पिक फोटो / दस्तावेज़ संलग्न करें)</span> — Max 5MB
             </label>
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/jpeg,image/png,image/webp,image/gif,application/pdf"
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
             <div className={styles.uploadRow}>
-              <div className={styles.uploadTile}>
+              <div
+                className={`${styles.uploadTile} ${isDragging ? styles.uploadTileDragging : ""}`}
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                role="button"
+                tabIndex={0}
+                title="Click to select or drag and drop image / PDF"
+              >
                 <span className={styles.uploadIcon}>📷</span>
                 <div>
-                  <div className={styles.uploadTitle}>Tap to snap or choose from gallery</div>
+                  <div className={styles.uploadTitle}>
+                    {isDragging ? "Drop file to attach" : "Tap to choose or drag photo / PDF"}
+                  </div>
                   <div className={styles.uploadHint}>
-                    JPEG, PNG, HEIC formats. Geotagging extracted automatically.
+                    JPG, PNG, WebP or PDF (Max 5MB). Geotagging extracted automatically.
                   </div>
                 </div>
               </div>
+
+              {selectedFile ? (
+                <div className={styles.uploadPreview}>
+                  <div
+                    className={styles.previewThumb}
+                    style={
+                      !selectedFile.isPdf
+                        ? { backgroundImage: `url(${selectedFile.dataUrl})` }
+                        : { background: "#17434f", display: "flex", alignItems: "center", justifyContent: "center" }
+                    }
+                  >
+                    <div className={styles.previewThumbOverlay} />
+                    <span className={styles.attachedTag}>
+                      {selectedFile.isPdf ? "📄 PDF DOCUMENT" : "📷 EVIDENCE ATTACHED"}
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.previewBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowPreviewModal(true);
+                      }}
+                    >
+                      🔍 Preview File
+                    </button>
+                  </div>
+                  <div className={styles.previewMeta}>
+                    <span
+                      title={selectedFile.name}
+                      style={{ maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                    >
+                      📎 {selectedFile.name} ({selectedFile.sizeFormatted})
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.removeLink}
+                      onClick={handleRemoveFile}
+                      style={{ background: "none", border: "none", cursor: "pointer" }}
+                    >
+                      ✕ Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className={styles.uploadTile}
+                  style={{ opacity: 0.65, borderStyle: "dotted", cursor: "pointer" }}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <span className={styles.uploadIcon}>📎</span>
+                  <div>
+                    <div className={styles.uploadTitle}>Optional Evidence</div>
+                    <div className={styles.uploadHint}>Attach photos to help field officers resolve faster.</div>
+                  </div>
+                </div>
+              )}
             </div>
+
+            {selectedFile && (
+              <FilePreviewModal
+                isOpen={showPreviewModal}
+                onClose={() => setShowPreviewModal(false)}
+                fileUrl={selectedFile.dataUrl}
+                fileName={selectedFile.name}
+                title="Citizen Pre-Submission Evidence Preview"
+              />
+            )}
 
             {error && (
               <div style={{

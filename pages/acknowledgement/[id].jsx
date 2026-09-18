@@ -8,6 +8,7 @@ import NavTabs from "../../components/NavTabs";
 import Badge from "../../components/Badge";
 import InfoCard from "../../components/InfoCard";
 import Stepper from "../../components/Stepper";
+import FilePreviewModal from "../../components/FilePreviewModal";
 import styles from "../../styles/Acknowledgement.module.css";
 
 export default function AcknowledgementPage() {
@@ -16,6 +17,7 @@ export default function AcknowledgementPage() {
   const [complaint, setComplaint] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showEvidenceModal, setShowEvidenceModal] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -146,15 +148,89 @@ export default function AcknowledgementPage() {
                 </div>
               </div>
 
+              {complaint.image_path && (
+                <div style={{
+                  marginTop: 18,
+                  padding: "12px 16px",
+                  background: "var(--line-100)",
+                  borderRadius: "var(--radius-sm)",
+                  border: "1px solid var(--line-200)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: 12,
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <span style={{ fontSize: 24 }}>📷</span>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--ink-900)" }}>
+                        Attached Evidence / Photo <span className="hi">(संलग्न प्रमाण)</span>
+                      </div>
+                      <div style={{ fontSize: 11.5, color: "var(--ink-500)" }}>
+                        Document uploaded with grievance: {complaint.image_path.split("/").pop()}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowEvidenceModal(true)}
+                    style={{
+                      background: "var(--paper)",
+                      border: "1px solid var(--line-200)",
+                      padding: "6px 14px",
+                      borderRadius: "var(--radius-sm)",
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      color: "var(--blue-700)",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    🔍 Open Attached File <span className="hi">(फ़ाइल खोलें)</span>
+                  </button>
+                </div>
+              )}
+
               <div className={styles.actionRow}>
                 <div className={styles.trackNote}>
                   📋 Save your Complaint ID for future reference and tracking.
                 </div>
-                <Link href="/" className={styles.newButton}>
-                  File Another Complaint <span className="hi">(नई शिकायत)</span> →
-                </Link>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <Link
+                    href={`/track?id=${encodeURIComponent(complaint.complaint_id)}`}
+                    style={{
+                      background: "var(--blue-700)",
+                      color: "#fff",
+                      padding: "8px 16px",
+                      borderRadius: "var(--radius-sm)",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    🚀 Track Live Grievance <span className="hi">(लाइव स्थिति देखें)</span> →
+                  </Link>
+                  <Link href="/" className={styles.newButton}>
+                    File Another Complaint <span className="hi">(नई शिकायत)</span>
+                  </Link>
+                </div>
               </div>
             </InfoCard>
+          )}
+
+          {complaint && complaint.image_path && (
+            <FilePreviewModal
+              isOpen={showEvidenceModal}
+              onClose={() => setShowEvidenceModal(false)}
+              fileUrl={complaint.image_path}
+              fileName={complaint.image_path.split("/").pop()}
+              title={`Evidence Attachment — Grievance #${complaint.complaint_id}`}
+            />
           )}
         </main>
 

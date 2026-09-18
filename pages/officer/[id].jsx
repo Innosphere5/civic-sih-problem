@@ -8,6 +8,7 @@ import NavTabs from "../../components/NavTabs";
 import OfficerSidebar from "../../components/OfficerSidebar";
 import Badge from "../../components/Badge";
 import InfoCard from "../../components/InfoCard";
+import FilePreviewModal from "../../components/FilePreviewModal";
 import styles from "../../styles/Officer.module.css";
 
 const CATEGORIES = [
@@ -27,8 +28,11 @@ const DEPARTMENTS = [
 ];
 
 const STATUS_BADGE = {
+  Pending: "amber",
+  Accepted: "green",
+  Rejected: "red",
   Open: "blue",
-  "In Progress": "amber",
+  "In Progress": "blue",
   Resolved: "green",
   Escalated: "red",
 };
@@ -44,10 +48,12 @@ export default function OfficerDetailView() {
   // Override form state
   const [overrideCategory, setOverrideCategory] = useState("");
   const [overrideDepartment, setOverrideDepartment] = useState("");
+  const [status, setStatus] = useState("Open");
   const [reason, setReason] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
   const [saveError, setSaveError] = useState("");
+  const [showEvidenceModal, setShowEvidenceModal] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -65,6 +71,7 @@ export default function OfficerDetailView() {
         setComplaint(data);
         setOverrideCategory(data.category);
         setOverrideDepartment(data.department);
+        setStatus(data.status);
         setReason(data.override_reason || "");
         setLoading(false);
       })
@@ -78,22 +85,36 @@ export default function OfficerDetailView() {
     setSaveMsg("");
     setSaveError("");
 
-    if (reason.trim().length < 20) {
-      setSaveError("Override reason must be at least 20 characters.");
+    const isCategoryChanged = overrideCategory !== complaint.category;
+    const isDeptChanged = overrideDepartment !== complaint.department;
+    const isStatusChanged = status !== complaint.status;
+
+    if ((isCategoryChanged || isDeptChanged) && reason.trim().length < 20) {
+      setSaveError("Override reason must be at least 20 characters when changing category or department.");
       return;
     }
 
     setSaving(true);
     try {
-      const body = { override_reason: reason.trim() };
+      const body = {};
 
-      // Only include fields that changed
-      if (overrideCategory !== complaint.category) {
+      if (reason.trim()) {
+        body.override_reason = reason.trim();
+      }
+      if (isCategoryChanged) {
         body.category = overrideCategory;
       }
-      if (overrideDepartment !== complaint.department && !body.category) {
-        // If category changed, department is auto-resolved by API
+      if (isDeptChanged && !isCategoryChanged) {
         body.department = overrideDepartment;
+      }
+      if (isStatusChanged) {
+        body.status = status;
+      }
+
+      if (Object.keys(body).length === 0) {
+        setSaveError("No changes were made.");
+        setSaving(false);
+        return;
       }
 
       const res = await fetch(`/api/complaints/${encodeURIComponent(id)}`, {
@@ -105,7 +126,7 @@ export default function OfficerDetailView() {
       const data = await res.json();
 
       if (!res.ok) {
-        setSaveError(data.error || "Failed to save override.");
+        setSaveError(data.error || "Failed to save updates.");
         setSaving(false);
         return;
       }
@@ -113,9 +134,68 @@ export default function OfficerDetailView() {
       setComplaint(data);
       setOverrideCategory(data.category);
       setOverrideDepartment(data.department);
+      setStatus(data.status);
       setReason(data.override_reason || "");
-      setSaveMsg("Override saved successfully.");
+      setSaveMsg("Casework updates saved successfully.");
       setSaving(false);
+
+      if (typeof window !== "undefined" && window.BroadcastChannel) {
+        try {
+          const bc = new BroadcastChannel("civic_complaints_realtime");
+          bc.postMessage({ type: "STATUS_UPDATE", complaint: data });
+          bc.close();
+        } catch (e) {}
+      }
+    } catch (err) {
+      setSaveError("Network error — please try again.");
+      setSaving(false);
+    }
+  }
+
+  async function handleQuickStatus(newStatus) {
+    setSaveMsg("");
+    setSaveError("");
+
+    if (newStatus === "Rejected" && (!reason || reason.trim().length < 5)) {
+      setStatus("Rejected");
+      setSaveError("Please provide a rejection reason below (minimum 5 characters) before marking as Rejected.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const body = { status: newStatus };
+      if (reason.trim()) body.override_reason = reason.trim();
+      if (overrideCategory !== complaint.category) body.category = overrideCategory;
+      if (overrideDepartment !== complaint.department && !body.category) body.department = overrideDepartment;
+
+      const res = await fetch(`/api/complaints/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setSaveError(data.error || "Failed to update status.");
+        setSaving(false);
+        return;
+      }
+
+      setComplaint(data);
+      setStatus(data.status);
+      setOverrideCategory(data.category);
+      setOverrideDepartment(data.department);
+      setSaveMsg(`Application successfully marked as ${newStatus}.`);
+      setSaving(false);
+
+      if (typeof window !== "undefined" && window.BroadcastChannel) {
+        try {
+          const bc = new BroadcastChannel("civic_complaints_realtime");
+          bc.postMessage({ type: "STATUS_UPDATE", complaint: data });
+          bc.close();
+        } catch (e) {}
+      }
     } catch (err) {
       setSaveError("Network error — please try again.");
       setSaving(false);
@@ -287,24 +367,182 @@ export default function OfficerDetailView() {
               <blockquote className={styles.quote}>
                 "{complaint.complaint_text}"
               </blockquote>
+
+              {/* Citizen Attached Evidence */}
+              {complaint.image_path ? (
+                <div style={{
+                  marginTop: 16,
+                  padding: "12px 14px",
+                  background: "var(--line-100)",
+                  borderRadius: "var(--radius-sm)",
+                  border: "1px solid var(--line-200)",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                    <span style={{ fontSize: "12.5px", fontWeight: 700, color: "var(--ink-900)" }}>
+                      📷 Citizen Attached Evidence <span className="hi">(संलग्न प्रमाण)</span>
+                    </span>
+                    <Badge variant="green">VERIFIED UPLOAD</Badge>
+                  </div>
+
+                  <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+                    <div
+                      style={{
+                        width: 80,
+                        height: 60,
+                        borderRadius: "var(--radius-sm)",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundColor: "#17434f",
+                        backgroundImage: !complaint.image_path.toLowerCase().endsWith(".pdf")
+                          ? `url(${complaint.image_path})`
+                          : "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#fff",
+                        fontSize: 22,
+                        border: "1px solid var(--line-200)",
+                      }}
+                      onClick={() => setShowEvidenceModal(true)}
+                      title="Click to open full file inspection"
+                    >
+                      {complaint.image_path.toLowerCase().endsWith(".pdf") ? "📄" : ""}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: "12.5px", fontWeight: 700, color: "var(--ink-900)" }}>
+                        {complaint.image_path.split("/").pop()}
+                      </div>
+                      <div style={{ fontSize: "11px", color: "var(--ink-500)", marginTop: 2 }}>
+                        Uploaded during initial grievance intake
+                      </div>
+                      <div style={{ marginTop: 6 }}>
+                        <button
+                          type="button"
+                          onClick={() => setShowEvidenceModal(true)}
+                          style={{
+                            background: "var(--paper)",
+                            border: "1px solid var(--line-200)",
+                            padding: "4px 10px",
+                            borderRadius: "var(--radius-sm)",
+                            fontSize: "11.5px",
+                            fontWeight: 700,
+                            color: "var(--blue-700)",
+                            cursor: "pointer",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                          }}
+                        >
+                          🔍 Open &amp; Inspect File <span className="hi">(फ़ाइल खोलें)</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{
+                  marginTop: 14,
+                  padding: "8px 12px",
+                  background: "var(--line-100)",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: "12px",
+                  color: "var(--ink-500)",
+                }}>
+                  📎 No photo or document attached by citizen.
+                </div>
+              )}
             </InfoCard>
 
             <InfoCard
               icon="🧭"
-              title="Officer Verification & Manual Override"
-              titleHi="(श्रेणी और विभाग सुधार)"
+              title="Officer Verification & Action Desk"
+              titleHi="(कार्यवाही एवं सुधार)"
               corner={<Badge variant="amber">OFFICER GATEKEEPER</Badge>}
             >
               <p className={styles.overrideDesc}>
-                Administrative prerogative to re-route misclassified or cross-jurisdictional
-                casework.
+                Update casework status or re-route misclassified jurisdictions.
               </p>
+
+              {/* Quick Decision Action Bar */}
+              <div style={{ marginBottom: 16 }}>
+                <label className={styles.fieldLabel} style={{ marginBottom: 8 }}>
+                  ⚡ Quick Decision Actions <span className="hi">(त्वरित प्रशासनिक निर्णय)</span>:
+                </label>
+                <div className={styles.actionButtonGroup}>
+                  <button
+                    type="button"
+                    className={`${styles.btnDecision} ${styles.btnAccept}`}
+                    onClick={() => handleQuickStatus("Accepted")}
+                    disabled={saving}
+                    title="Accept grievance and initiate statutory charter dispatch"
+                  >
+                    ✓ Accept Application <span className="hi">(स्वीकार)</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.btnDecision} ${styles.btnReject}`}
+                    onClick={() => handleQuickStatus("Rejected")}
+                    disabled={saving}
+                    title="Reject grievance (requires reason below)"
+                  >
+                    ✕ Reject Application <span className="hi">(अस्वीकार)</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.btnDecision} ${styles.btnPending}`}
+                    onClick={() => handleQuickStatus("Pending")}
+                    disabled={saving}
+                    title="Keep case under preliminary pending review"
+                  >
+                    ⏳ Mark as Pending <span className="hi">(लंबित)</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.btnDecision} ${styles.btnNeutral}`}
+                    onClick={() => handleQuickStatus("In Progress")}
+                    disabled={saving}
+                    title="Mark field team active on ground"
+                  >
+                    ⚙ In Progress
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.btnDecision} ${styles.btnNeutral}`}
+                    onClick={() => handleQuickStatus("Resolved")}
+                    disabled={saving}
+                    title="Mark resolved and close case"
+                  >
+                    🎉 Mark Resolved
+                  </button>
+                </div>
+              </div>
+
+              {/* Status Selector */}
+              <div style={{ marginBottom: 14 }}>
+                <label className={styles.fieldLabel}>
+                  Current Application Status <span className="hi">(वर्तमान स्थिति)</span>
+                  <span className={styles.required}>*</span>
+                </label>
+                <select
+                  className={styles.select}
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  style={{ fontWeight: 700 }}
+                >
+                  <option value="Pending">Pending — Under Preliminary Triage / Review</option>
+                  <option value="Accepted">Accepted — Approved &amp; Dispatched to Department</option>
+                  <option value="Rejected">Rejected — Ineligible / Duplicate / Insufficient Details</option>
+                  <option value="In Progress">In Progress — Field Team Deployed on Ground</option>
+                  <option value="Resolved">Resolved — Redressal Completed &amp; Verified</option>
+                  <option value="Escalated">Escalated — SLA Breached / Zonal Review</option>
+                </select>
+              </div>
 
               <div className={styles.fieldGrid2}>
                 <div>
                   <label className={styles.fieldLabel}>
                     Correct Category <span className="hi">(सुधारित श्रेणी)</span>
-                    <span className={styles.required}>*</span>
                   </label>
                   <select
                     className={styles.select}
@@ -322,7 +560,6 @@ export default function OfficerDetailView() {
                 <div>
                   <label className={styles.fieldLabel}>
                     Re-assignment Department <span className="hi">(संबंधित विभाग)</span>
-                    <span className={styles.required}>*</span>
                   </label>
                   <select
                     className={styles.select}
@@ -399,6 +636,16 @@ export default function OfficerDetailView() {
           </div>
         </main>
       </div>
+
+      {complaint && complaint.image_path && (
+        <FilePreviewModal
+          isOpen={showEvidenceModal}
+          onClose={() => setShowEvidenceModal(false)}
+          fileUrl={complaint.image_path}
+          fileName={complaint.image_path.split("/").pop()}
+          title={`Citizen Attached Evidence — Case #${complaint.complaint_id}`}
+        />
+      )}
     </>
   );
 }
