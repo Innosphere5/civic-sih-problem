@@ -107,7 +107,7 @@
 
 .statsRow {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 14px;
   margin-bottom: 18px;
 }
@@ -140,3 +140,81 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Inline Action Buttons */
+.inlineActions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.inlineAccept,
+.inlineReject,
+.inlinePending {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.inlineAccept {
+  background: var(--green-100);
+  color: var(--green-700);
+  border: 1px solid var(--green-600);
+}
+
+.inlineAccept:hover {
+  background: var(--green-600);
+  color: #fff;
+}
+
+.inlineReject {
+  background: var(--red-100);
+  color: var(--red-700);
+  border: 1px solid var(--red-border);
+}
+
+.inlineReject:hover {
+  background: var(--red-600);
+  color: #fff;
+}
+
+.inlinePending {
+  background: var(--amber-100);
+  color: var(--amber-600);
+  border: 1px solid var(--amber-border);
+}
+
+.inlinePending:hover {
+  background: var(--amber-500);
+  color: #fff;
+}
+
+.openDossierBtn {
+  background: var(--blue-700);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.openDossierBtn:hover {
+  background: var(--blue-800);
+}
+

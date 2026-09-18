@@ -1,4 +1,5 @@
 const { getDb } = require("../../../lib/db");
+const { complaintEvents } = require("../../../lib/events");
 const { classifyComplaint, generateAcknowledgement } = require("../../../lib/ai");
 const { resolveDepartment, generateComplaintId } = require("../../../lib/rules");
 
@@ -79,9 +80,9 @@ async function handlePost(req, res) {
     const cleanContact = sanitizeText(contact || "");
     const lang = (language || "en").substring(0, 5);
 
-    // 1. Classify with AI
+    // 1. Classify with AI (multimodal: text + attached image evidence)
     console.log(`[API] Classifying complaint (${countWords(cleanText)} words)...`);
-    const { category, confidence, needs_manual_review } = await classifyComplaint(cleanText);
+    const { category, confidence, needs_manual_review } = await classifyComplaint(cleanText, image_path);
 
     // 2. Resolve department + SLA via rules engine
     const { department, sla_hours } = resolveDepartment(category);
@@ -126,7 +127,7 @@ async function handlePost(req, res) {
       confidence,
       department,
       sla_hours,
-      status: "Open",
+      status: "Pending",
       acknowledgement,
       officer_override: 0,
       image_path: sanitizeText(image_path || "") || null,
@@ -148,7 +149,7 @@ async function handlePost(req, res) {
       confidence,
       department,
       sla_hours,
-      status: "Open",
+      status: "Pending",
       acknowledgement,
       needs_manual_review: needs_manual_review || false,
       created_at: now,

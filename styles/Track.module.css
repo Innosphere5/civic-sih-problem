@@ -1,0 +1,555 @@
+.searchCard {
+  margin-bottom: 24px;
+}
+
+.searchHeader {
+  margin-bottom: 14px;
+}
+
+.searchTitle {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.searchSubtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-500);
+}
+
+.searchBar {
+  display: flex;
+  gap: 10px;
+}
+
+.searchInputWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--paper);
+  border: 1.5px solid var(--line-200);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+  transition: border-color 0.15s;
+}
+
+.searchInputWrap:focus-within {
+  border-color: var(--blue-600);
+  box-shadow: 0 0 0 2px var(--blue-100);
+}
+
+.searchIcon {
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+.searchInput {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 12px 0;
+  font-size: 15px;
+  font-family: var(--font-mono-id);
+  font-weight: 600;
+  outline: none;
+  color: var(--ink-900);
+}
+
+.searchBtn {
+  background: var(--blue-700);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.searchBtn:hover {
+  background: var(--blue-600);
+}
+
+.recentChips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--ink-500);
+  flex-wrap: wrap;
+}
+
+.chipBtn {
+  background: var(--line-100);
+  border: 1px solid var(--line-200);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  font-size: 11.5px;
+  font-family: var(--font-mono-id);
+  font-weight: 600;
+  color: var(--blue-700);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.chipBtn:hover {
+  background: var(--blue-100);
+}
+
+/* Live Status Card */
+.trackingCard {
+  margin-bottom: 24px;
+}
+
+.liveHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line-200);
+  margin-bottom: 20px;
+}
+
+.liveTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.livePulse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--green-100);
+  color: var(--green-700);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-600);
+  animation: pulseAnim 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseAnim {
+  0% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+}
+
+.complaintIdText {
+  font-family: var(--font-mono-id);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--navy-900);
+}
+
+/* SLA Countdown Widget */
+.slaWidget {
+  background: linear-gradient(135deg, #0d2733 0%, #17434f 100%);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(13, 39, 51, 0.15);
+}
+
+.slaWidgetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.slaWidgetTitle {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber-100);
+}
+
+.slaClockText {
+  font-family: var(--font-mono-id);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.slaClockTextOverdue {
+  color: #ff9b8a;
+}
+
+.slaBarContainer {
+  background: rgba(255, 255, 255, 0.2);
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.slaBarFill {
+  height: 100%;
+  background: #34d399;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.slaBarFillAmber {
+  background: #fbbf24;
+}
+
+.slaBarFillRed {
+  background: #f87171;
+}
+
+.slaWidgetFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.8);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 4-Stage Timeline Stepper */
+.timeline {
+  position: relative;
+  margin: 24px 0 28px;
+  padding-left: 20px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 31px;
+  top: 15px;
+  bottom: 25px;
+  width: 2px;
+  background: var(--line-200);
+}
+
+.timelineItem {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  padding-bottom: 26px;
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+}
+
+.timelineMarker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--ink-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 2;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.timelineCompleted .timelineMarker {
+  background: var(--green-600);
+  border-color: var(--green-600);
+  color: #fff;
+}
+
+.timelineActive .timelineMarker {
+  background: var(--blue-700);
+  border-color: var(--blue-700);
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--blue-100);
+}
+
+.timelineRejected .timelineMarker {
+  background: var(--red-600);
+  border-color: var(--red-600);
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--red-100);
+}
+
+.timelineBody {
+  flex: 1;
+}
+
+.timelineTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: 3px;
+}
+
+.timelineDesc {
+  font-size: 12.5px;
+  color: var(--ink-500);
+  line-height: 1.5;
+}
+
+.timelineMeta {
+  font-size: 11.5px;
+  color: var(--ink-500);
+  margin-top: 4px;
+  font-family: var(--font-mono-id);
+}
+
+/* Details Grid */
+.detailGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detailTile {
+  background: var(--line-100);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  border: 1px solid var(--line-200);
+}
+
+.detailLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin-bottom: 4px;
+}
+
+.detailVal {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+/* Evidence Box */
+.evidenceCard {
+  background: var(--line-100);
+  border: 1px solid var(--line-200);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.evidenceHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.evidenceTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink-900);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.evidenceBody {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.evidenceThumb {
+  width: 100px;
+  height: 80px;
+  border-radius: var(--radius-sm);
+  background-size: cover;
+  background-position: center;
+  background-color: #1a2226;
+  border: 1px solid var(--line-200);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+  transition: transform 0.15s;
+}
+
+.evidenceThumb:hover {
+  transform: scale(1.03);
+}
+
+.openFileBtn {
+  background: var(--blue-700);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.openFileBtn:hover {
+  background: var(--blue-600);
+}
+
+/* Actions */
+.actionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--line-200);
+  padding-top: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.refreshBtn {
+  background: var(--paper);
+  border: 1px solid var(--line-200);
+  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-700);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.refreshBtn:hover {
+  background: var(--line-100);
+}
+
+.quoteBlock {
+  background: var(--line-100);
+  border-left: 3px solid var(--blue-600);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-700);
+  margin: 16px 0;
+}
+
+/* Real-time Status Notification Banner */
+.liveNoticeBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  animation: slideDownFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.liveNoticeBanner[data-status="Accepted"] {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  color: #166534;
+}
+
+.liveNoticeBanner[data-status="Rejected"] {
+  background: #fef2f2;
+  border: 1.5px solid #fca5a5;
+  color: #991b1b;
+}
+
+.liveNoticeBanner[data-status="Pending"] {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  color: #92400e;
+}
+
+.liveSyncTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.liveSyncDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.4);
+  animation: livePing 1.8s infinite;
+}
+
+@keyframes livePing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+

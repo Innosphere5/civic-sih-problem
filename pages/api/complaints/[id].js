@@ -1,4 +1,5 @@
 const { getDb } = require("../../../lib/db");
+const { complaintEvents } = require("../../../lib/events");
 const { resolveDepartment, CANDIDATE_CATEGORIES } = require("../../../lib/rules");
 
 function maskContact(contact) {
@@ -58,11 +59,20 @@ function handlePatch(req, res, id) {
 
     // Validate status if provided
     if (status !== undefined) {
-      const validStatuses = ["Open", "In Progress", "Resolved", "Escalated"];
+      const validStatuses = ["Pending", "Accepted", "Rejected", "In Progress", "Resolved", "Open", "Escalated"];
       if (!validStatuses.includes(status)) {
         return res.status(400).json({ error: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
       }
       updates.status = status;
+
+      // If rejected, ensure explanation reason is provided
+      if (status === "Rejected") {
+        if (!override_reason || typeof override_reason !== "string" || override_reason.trim().length < 5) {
+          return res.status(400).json({
+            error: "A valid rejection reason must be provided (minimum 5 characters) for citizen notice.",
+          });
+        }
+      }
     }
 
     // Validate category if provided
@@ -86,11 +96,15 @@ function handlePatch(req, res, id) {
 
     // If category or department changed, require override_reason
     if (requiresOverride) {
-      if (!override_reason || typeof override_reason !== "string" || override_reason.trim().length < 20) {
+      if (!override_reason || typeof override_reason !== "string" || override_reason.trim().length < 15) {
         return res.status(400).json({
-          error: "Override reason is required and must be at least 20 characters when changing category or department.",
+          error: "Override reason is required and must be at least 15 characters when changing category or department.",
         });
       }
+    }
+
+    // Save override reason if provided
+    if (override_reason && typeof override_reason === "string") {
       updates.officer_override = 1;
       updates.override_reason = override_reason.trim();
     }
@@ -111,6 +125,11 @@ function handlePatch(req, res, id) {
 
     // Fetch and return the updated record
     const updated = db.prepare("SELECT * FROM complaints WHERE complaint_id = ?").get(id);
+
+    // Broadcast real-time update to all listeners (SSE streams)
+    if (updated) {
+      complaintEvents.emit("update", updated);
+    }
 
     console.log(`[API] Complaint ${id} updated:`, Object.keys(updates).filter(k => k !== "updated_at").join(", "));
 

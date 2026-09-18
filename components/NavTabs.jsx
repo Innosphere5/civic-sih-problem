@@ -2,8 +2,9 @@ import Link from "next/link";
 import styles from "./NavTabs.module.css";
 
 const TABS = [
-  { key: "officer", en: "Officer Console", hi: "डैशबोर्ड", href: "/officer" },
   { key: "citizen", en: "Citizen Filing Flow", hi: "नागरिक पोर्टल", href: "/" },
+  { key: "track", en: "Track Grievance", hi: "स्थिति ट्रैक करें", href: "/track" },
+  { key: "officer", en: "Officer Console", hi: "डैशबोर्ड", href: "/officer" },
   { key: "queue", en: "Department Queue", hi: "विभाग ट्रैकर", href: "#" },
   { key: "audit", en: "Audit & SLA Reports", hi: "एसएलए रिपोर्ट", href: "#" },
 ];
