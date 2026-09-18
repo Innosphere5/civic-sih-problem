@@ -295,6 +295,32 @@ export default function FullApplicationModal({
               <label style={{ fontSize: "0.85rem", fontWeight: 700, color: "#991b1b" }}>
                 Specify Rejection Reason (Mandatory for citizen transparency, min 5 chars):
               </label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "8px" }}>
+                {[
+                  "Jurisdiction Mismatch (Transferred to State Authority)",
+                  "Incomplete Address or Unverifiable Location",
+                  "Duplicate Grievance Previously Registered",
+                  "Private Property Dispute Outside Municipal Charter",
+                  "Insufficient Evidence to Substantiate Claim",
+                ].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setRejectionReason(preset)}
+                    style={{
+                      fontSize: "11px",
+                      padding: "3px 8px",
+                      borderRadius: "12px",
+                      background: rejectionReason === preset ? "#fee2e2" : "#f1f5f9",
+                      border: "1px solid #cbd5e1",
+                      color: rejectionReason === preset ? "#991b1b" : "#334155",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
               <textarea
                 className={styles.rejectionTextarea}
                 rows={3}
@@ -302,7 +328,7 @@ export default function FullApplicationModal({
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
               />
-              <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+              <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", marginTop: "8px" }}>
                 <button
                   type="button"
                   className={styles.btnSecondary}

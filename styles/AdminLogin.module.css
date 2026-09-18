@@ -1,0 +1,476 @@
+/* =====================================================================
+   ADMINISTRATIVE LOGIN — BESPOKE NIC/GOV EXECUTIVE STYLING
+   Non-AI Generated Aesthetic: Authoritative, Official, High-Security
+   No credentials exposed on the UI. Real dynamic visual CAPTCHA.
+   ===================================================================== */
+
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #0b1f28;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(28, 114, 146, 0.25), transparent),
+    radial-gradient(circle at 100% 100%, rgba(13, 39, 51, 0.5), transparent),
+    linear-gradient(to bottom, #091a22 0%, #0d2733 50%, #08171e 100%);
+  color: var(--ink-900);
+  font-family: var(--font-body);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Tricolor Sovereign Accent Ribbon */
+.tricolorRibbon {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #ff9933 0%,
+    #ff9933 33.33%,
+    #ffffff 33.33%,
+    #ffffff 66.66%,
+    #138808 66.66%,
+    #138808 100%
+  );
+}
+
+/* Official Gov Top Bar */
+.govTopBar {
+  background: #07151c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #8da4ae;
+  letter-spacing: 0.3px;
+}
+
+.govTopLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.govTopBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(217, 138, 29, 0.15);
+  color: #eab308;
+  border: 1px solid rgba(217, 138, 29, 0.3);
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.govTopRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.systemStatusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #78e08f;
+  font-weight: 600;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  background: #2ed573;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #2ed573;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Main Container */
+.mainContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 16px 48px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Official Header Block */
+.officialHeader {
+  text-align: center;
+  margin-bottom: 24px;
+  max-width: 640px;
+}
+
+.emblemWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  background: linear-gradient(145deg, #17434f, #0d2733);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  margin-bottom: 12px;
+}
+
+.ministryTitle {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #9cb1ba;
+  margin-bottom: 4px;
+}
+
+.portalMainHeading {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+  margin: 0 0 4px;
+}
+
+.portalSubHeadingHi {
+  font-size: 13px;
+  color: #d98a1d;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Authentication Card */
+.authCard {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #c7d2d6;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.cardHeader {
+  background: linear-gradient(180deg, #163d4c 0%, #11313f 100%);
+  padding: 16px 22px;
+  border-bottom: 2px solid #d98a1d;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardHeaderTitle {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardHeaderBadge {
+  background: rgba(0, 0, 0, 0.35);
+  color: #e5edf0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Clearance Notice Header inside Card */
+.securityBanner {
+  background: #f4f8fa;
+  border-bottom: 1px solid #d8e2e6;
+  padding: 10px 20px;
+  font-size: 11.5px;
+  color: #3b5058;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.securityBannerIcon {
+  color: #175a72;
+  font-size: 14px;
+}
+
+/* Form Container */
+.cardBody {
+  padding: 24px 22px 20px;
+}
+
+.errorBanner {
+  background: #fdf0ed;
+  border: 1px solid #ea8671;
+  border-left: 4px solid #b3412c;
+  color: #751a08;
+  padding: 10px 14px;
+  border-radius: 3px;
+  margin-bottom: 18px;
+  font-size: 12px;
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.formGroup {
+  margin-bottom: 18px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a272b;
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.fieldLabelHi {
+  color: #718389;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  color: #6a7f87;
+  pointer-events: none;
+  font-size: 14px;
+}
+
+.textInput {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px 0 36px;
+  border: 1px solid #9fb4bc;
+  border-radius: 3px;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: #0b1f28;
+  background: #ffffff;
+  transition: all 0.15s ease;
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: #175a72;
+  box-shadow: 0 0 0 3px rgba(23, 90, 114, 0.18);
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 8px;
+  background: #edf2f4;
+  border: 1px solid #ccd7dc;
+  border-radius: 2px;
+  color: #3b5058;
+  cursor: pointer;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  transition: all 0.15s ease;
+}
+
+.passwordToggle:hover {
+  background: #dfe7ea;
+  color: #0d2733;
+}
+
+/* Dynamic Interactive CAPTCHA */
+.captchaGroup {
+  margin-bottom: 20px;
+}
+
+.captchaBox {
+  background: #f4f7f8;
+  border: 1px solid #ccd8dc;
+  border-radius: 3px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.captchaCanvasWrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.captchaCanvas {
+  border: 1px solid #b3c2c7;
+  border-radius: 2px;
+  background: #fcfcfc;
+  cursor: pointer;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+.captchaActionBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.captchaActionBtn {
+  background: #ffffff;
+  border: 1px solid #cbd5d8;
+  border-radius: 2px;
+  width: 28px;
+  height: 22px;
+  cursor: pointer;
+  color: #3b5058;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.captchaActionBtn:hover {
+  background: #e4ebed;
+  border-color: #9cb1ba;
+  color: #11313f;
+}
+
+.captchaInputWrapper {
+  flex: 1;
+}
+
+.captchaInput {
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #9fb4bc;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: var(--font-mono-id);
+  color: #103340;
+}
+
+.captchaInput:focus {
+  outline: none;
+  border-color: #175a72;
+  box-shadow: 0 0 0 2px rgba(23, 90, 114, 0.18);
+}
+
+.captchaHint {
+  font-size: 10.5px;
+  color: #6a7f87;
+  margin-top: 4px;
+}
+
+/* Submit Button */
+.submitBtn {
+  width: 100%;
+  height: 44px;
+  background: linear-gradient(180deg, #175a72 0%, #113d4e 100%);
+  border: 1px solid #0d2d3a;
+  border-radius: 3px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: all 0.15s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: linear-gradient(180deg, #1c7292 0%, #175a72 100%);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Security Notice Box */
+.securityNotice {
+  margin-top: 16px;
+  background: #fdfaf3;
+  border: 1px solid #edd9af;
+  border-radius: 3px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #7a5813;
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* Official Footer */
+.govFooter {
+  margin-top: 32px;
+  text-align: center;
+  max-width: 580px;
+  font-size: 11px;
+  color: #6a828d;
+  line-height: 1.6;
+}
+
+.legalNotice {
+  margin-top: 8px;
+  color: #556c75;
+  font-size: 10px;
+}
